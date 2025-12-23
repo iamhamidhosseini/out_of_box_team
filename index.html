@@ -3,12 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track - برنامه ورزشی </title>
+    <title>Track - برنامه ورزشی گیمیفیکیشن</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* منوی همبرگری */
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 24px;
+            cursor: pointer;
+            padding: 5px;
+            z-index: 1001;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--text-light);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        .light-theme .hamburger-menu span {
+            background: var(--text-light);
+        }
+
+        .hamburger-menu.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* منوی موبایل */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 80px 30px 30px;
+            transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            overflow-y: auto;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            border-left: 2px solid rgba(106, 17, 203, 0.3);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mobile-nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 15px 20px;
+            border-radius: 12px;
+            transition: var(--transition);
+            border-right: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .light-theme .mobile-nav-link {
+            color: #333;
+        }
+
+        .mobile-nav-link:hover, .mobile-nav-link.active {
+            background: rgba(106, 17, 203, 0.2);
+            border-right-color: var(--accent-purple);
+            transform: translateX(-10px);
+        }
+
+        .mobile-nav-link i {
+            font-size: 1.3rem;
+            width: 30px;
+        }
+
+        .mobile-user-info {
+            margin-bottom: 40px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 15px;
+            border: 3px solid var(--accent-purple);
+        }
+
+        .mobile-user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1002;
+            transition: var(--transition);
+        }
+
+        .mobile-nav-close:hover {
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* استایل‌های رسپانسیو برای موبایل */
+        @media (max-width: 992px) {
+            .hamburger-menu {
+                display: flex;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .user-info {
+                display: flex;
+                align-items: center;
+            }
+            
+            .user-info > div:not(.user-avatar) {
+                display: none;
+            }
+            
+            .logout-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav {
+                width: 85%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .mobile-nav {
+                width: 90%;
+                padding: 70px 20px 20px;
+            }
+            
+            .mobile-nav-link {
+                font-size: 1.1rem;
+                padding: 12px 15px;
+            }
+        }
         :root {
             --primary-dark: #0f0c29;
             --secondary-dark: #1a1a2e;
@@ -2546,7 +2744,41 @@
                     <i class="fas fa-running"></i>
                     <span>Track</span>
                 </div>
-                
+
+                <!-- منوی موبایل -->
+                <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+                <div class="mobile-nav" id="mobile-nav">
+                    <button class="mobile-nav-close" id="mobile-nav-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <img id="mobile-user-avatar-img" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+                        </div>
+                        <h4 id="mobile-user-name">کاربر</h4>
+                        <p id="mobile-user-role">سطح ۱ - سیاره سبز</p>
+                    </div>
+                    
+                    <div class="mobile-nav-links" id="mobile-nav-links">
+                        <!-- لینک‌ها توسط جاوااسکریپت پر می‌شوند -->
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid rgba(255, 255, 255, 0.1);">
+                        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 15px;">
+                            <i class="fas fa-sign-out-alt"></i> خروج از حساب
+                        </button>
+                        <button class="btn btn-primary" id="mobile-theme-toggle" style="width: 100%;">
+                            <i class="fas fa-moon"></i> تغییر تم
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <nav class="nav-links">
                     <a href="#" class="nav-link" data-page="user-welcome">خوش آمدید</a>
                     <a href="#" class="nav-link active" data-page="user-dashboard">داشبورد</a>
@@ -3806,7 +4038,11 @@
                     <i class="fas fa-running"></i>
                     <span>Track - پنل مدیریت</span>
                 </div>
-                
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <nav class="nav-links">
                     <a href="#" class="nav-link active" data-page="admin-dashboard">داشبورد مدیریت</a>
                     <a href="#" class="nav-link" data-page="admin-users">مدیریت کاربران</a>
@@ -6428,7 +6664,141 @@
                 });
             });
         }
+
+        function updateMobileMenu() {
+            const mobileNavLinks = document.getElementById('mobile-nav-links');
+            const mobileUserAvatar = document.getElementById('mobile-user-avatar-img');
+            const mobileUserName = document.getElementById('mobile-user-name');
+            const mobileUserRole = document.getElementById('mobile-user-role');
+            const mobileLogoutBtn = document.querySelector('#mobile-nav .logout-btn');
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            
+            if (!currentUser) return;
+            
+            // به‌روزرسانی اطلاعات کاربر
+            if (mobileUserAvatar) mobileUserAvatar.src = currentUser.avatar;
+            if (mobileUserName) mobileUserName.textContent = currentUser.name;
+            
+            // پر کردن لینک‌های منو بر اساس پورتال فعال
+            let links = [];
+            
+            if (currentPortal === 'user') {
+                if (mobileUserRole) mobileUserRole.textContent = `سطح ${currentUser.level} - ${getPlanetName(currentUser.level)}`;
+                
+                links = [
+                    { icon: 'fas fa-home', text: 'خوش آمدید', page: 'user-welcome' },
+                    { icon: 'fas fa-tachometer-alt', text: 'داشبورد', page: 'user-dashboard' },
+                    { icon: 'fas fa-clipboard-check', text: 'ثبت عملکرد', page: 'user-performance' },
+                    { icon: 'fas fa-calendar-check', text: 'رویدادها', page: 'user-events' },
+                    { icon: 'fas fa-trophy', text: 'رنکینگ', page: 'user-ranking' },
+                    { icon: 'fas fa-comments', text: 'چت', page: 'user-chat' },
+                    { icon: 'fas fa-user-tie', text: 'مربی‌ها', page: 'user-coaches' },
+                    { icon: 'fas fa-video', text: 'ویدیوها', page: 'user-videos' },
+                    { icon: 'fas fa-certificate', text: 'گواهی‌ها', page: 'user-certificate' },
+                    { icon: 'fas fa-user', text: 'پروفایل', page: 'user-profile' }
+                ];
+            } else if (currentPortal === 'coach') {
+                if (mobileUserRole) mobileUserRole.textContent = currentUser.specialty;
+                
+                links = [
+                    { icon: 'fas fa-tachometer-alt', text: 'داشبورد مربی', page: 'coach-dashboard' },
+                    { icon: 'fas fa-user-graduate', text: 'شاگردان', page: 'coach-students' },
+                    { icon: 'fas fa-comments', text: 'چت', page: 'coach-chat' },
+                    { icon: 'fas fa-video', text: 'محتوا', page: 'coach-content' },
+                    { icon: 'fas fa-calendar-plus', text: 'رویدادها', page: 'coach-events' },
+                    { icon: 'fas fa-chart-line', text: 'مالی', page: 'coach-finance' },
+                    { icon: 'fas fa-user', text: 'پروفایل', page: 'coach-profile' }
+                ];
+            } else if (currentPortal === 'admin') {
+                if (mobileUserRole) mobileUserRole.textContent = 'ادمین سیستم';
+                
+                links = [
+                    { icon: 'fas fa-tachometer-alt', text: 'داشبورد مدیریت', page: 'admin-dashboard' },
+                    { icon: 'fas fa-users-cog', text: 'مدیریت کاربران', page: 'admin-users' },
+                    { icon: 'fas fa-user-tie', text: 'مدیریت مربیان', page: 'admin-coaches' },
+                    { icon: 'fas fa-photo-video', text: 'مدیریت محتوا', page: 'admin-content' },
+                    { icon: 'fas fa-calendar-week', text: 'مدیریت رویدادها', page: 'admin-events' },
+                    { icon: 'fas fa-chart-pie', text: 'گزارشات', page: 'admin-reports' },
+                    { icon: 'fas fa-cogs', text: 'تنظیمات', page: 'admin-settings' }
+                ];
+            }
+            
+            // ایجاد لینک‌های موبایل
+            if (mobileNavLinks) {
+                mobileNavLinks.innerHTML = links.map(link => `
+                    <a href="#" class="mobile-nav-link ${currentPage === link.page ? 'active' : ''}" data-page="${link.page}">
+                        <i class="${link.icon}"></i>
+                        ${link.text}
+                    </a>
+                `).join('');
+                
+                // اضافه کردن event listener به لینک‌های موبایل
+                const mobileLinks = mobileNavLinks.querySelectorAll('.mobile-nav-link');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const pageId = this.getAttribute('data-page');
+                        showPage(pageId);
+                    });
+                });
+            }
+            
+            // دکمه خروج در موبایل
+            if (mobileLogoutBtn) {
+                mobileLogoutBtn.addEventListener('click', logout);
+            }
+            
+            // دکمه تغییر تم در موبایل
+            if (mobileThemeToggle) {
+                mobileThemeToggle.addEventListener('click', toggleTheme);
+            }
+        }
         
+        // کنترل منوی موبایل
+        function setupMobileMenu() {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const mobileNav = document.getElementById('mobile-nav');
+            const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+            const mobileNavClose = document.getElementById('mobile-nav-close');
+            
+            if (hamburgerMenu && mobileNav && mobileNavOverlay && mobileNavClose) {
+                hamburgerMenu.addEventListener('click', function() {
+                    hamburgerMenu.classList.toggle('active');
+                    mobileNav.classList.toggle('active');
+                    mobileNavOverlay.classList.toggle('active');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                mobileNavClose.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+                
+                mobileNavOverlay.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+                
+                // بستن منو با کلیک روی لینک
+                const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        closeMobileMenu();
+                    });
+                });
+            }
+        }
+        // به‌روزرسانی منوی موبایل
+        updateMobileMenu();
+        function closeMobileMenu() {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const mobileNav = document.getElementById('mobile-nav');
+            const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+            
+            if (hamburgerMenu) hamburgerMenu.classList.remove('active');
+            if (mobileNav) mobileNav.classList.remove('active');
+            if (mobileNavOverlay) mobileNavOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        setupMobileMenu();
         // توابع عمومی برای استفاده در HTML
         window.openEventModal = openEventModal;
         window.removeUploadedFile = removeUploadedFile;
